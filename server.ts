@@ -14,22 +14,22 @@ for (let i = 0 ; i < number_of_videos ; i += 1)
 
 socket.on ('connect', function () {
 	console.log ("new connection");
-});
 
-socket.on ('new_comment', function (data) {
-	let comment = data;
-	if (comment.id)
-	{
-		comments [comment.id].push ({author: comment.author, text: comment.text});
-	}
-	else
-	{
-		console.log ("Wrong query: " + data);
-	}
-});
+	socket.on ('new_comment', function (data) {
+		let comment = data;
+		if (comment.id)
+		{
+			comments [comment.id].push ({author: comment.author, text: comment.text});
+		}
+		else
+		{
+			console.log ("Wrong query: " + data);
+		}
+	});
 
-socket.on ('disconnect', function () {
-	console.log ("new disconnection");
+	socket.on ('disconnect', function () {
+		console.log ("new disconnection");
+	});
 });
 
 app.get ('/data', function (req, res) {
