@@ -12,10 +12,10 @@ for (let i = 0 ; i < number_of_videos ; i += 1)
 	comments.push ([]);
 }
 
-socket.on ('connect', function () {
+socket.on ('connect', function (client) {
 	console.log ("new connection");
 
-	socket.on ('new_comment', function (data) {
+	client.on ('new_comment', function (data) {
 		let comment = data;
 		if (comment.id)
 		{
@@ -27,7 +27,7 @@ socket.on ('connect', function () {
 		}
 	});
 
-	socket.on ('disconnect', function () {
+	client.on ('disconnect', function () {
 		console.log ("new disconnection");
 	});
 });
