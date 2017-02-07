@@ -12,10 +12,10 @@ for (let i = 0 ; i < number_of_videos ; i += 1)
 	comments.push ([]);
 }
 
-socket.on ('connect', function (client) {
+socket.on ('connect', function () {
 	console.log ("new connection");
 
-	client.on ('new_comment', function (data) {
+	socket.on ('new_comment', function (data) {
 		let comment = data;
 		if (comment.id)
 		{
@@ -27,7 +27,7 @@ socket.on ('connect', function (client) {
 		}
 	});
 
-	client.on ('disconnect', function () {
+	socket.on ('disconnect', function () {
 		console.log ("new disconnection");
 	});
 });
@@ -42,7 +42,7 @@ app.get ('/', function (req, res) {
 	let answer_html = `
 	<html>
 		<body>
-		        <script src='/node_modules/socket.io-client/dist/socket.io.min.js'></script>
+		        <script src='/socket.io/socket.io.min.js'></script>
 				<script>
 					var socket = io();
 					socket.emit('new_comment', {id: 1, author: 'Alex Tsvetanov', text: 'TTSarq be tuk'});
