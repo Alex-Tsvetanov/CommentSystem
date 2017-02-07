@@ -1,25 +1,3 @@
-/*
-socket.on ('connect', function () {
-	console.log ("new connection");
-
-	socket.on ('new_comment', function (data) {
-		let comment = data;
-		if (comment.id)
-		{
-			comments [comment.id].push ({author: comment.author, text: comment.text});
-		}
-		else
-		{
-			console.log ("Wrong query: " + data);
-		}
-	});
-
-	socket.on ('disconnect', function () {
-		console.log ("new disconnection");
-	});
-});
-*/
-
 var app = require('express')();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
@@ -33,10 +11,7 @@ for (let i = 0 ; i < number_of_videos ; i += 1)
 	comments.push ([]);
 }
 
-io.on ('connection', function(client){ 
-		console.log ("New connection " + client.id);
-
-client.on ('new_comment', function (data) {
+let add_comment = function (data) {
 	console.log ('recieved ' + data);
 	let comment = data;
 	if (comment.id)
@@ -47,7 +22,12 @@ client.on ('new_comment', function (data) {
 	{
 		console.log ("Wrong query: " + data);
 	}
-});
+};
+
+io.on ('connection', function(client){ 
+	console.log ("New connection " + client.id);
+
+	client.on ('new_comment', add_comment);
 });
 
 app.get ('/', function (req, res) {
@@ -58,15 +38,20 @@ app.get ('/', function (req, res) {
 				<script>
 					var socket = io ();
 					socket.on('connect', function(){
-						alert (socket.id);
 						socket.emit('new_comment', {id: 1, author: 'Alex Tsvetanov', text: 'TTSarq be tuk'});
-						alert ("emitted");
 					});
 				</script>
 		</body>
 	</html>
 	`;
 	res.send (answer_html);
+});
+
+app.get ('/new_comment', function (req, res) {
+	console.log (req.url);
+	let id = parseInt (req.query.id);
+	add_comment (req.query);
+	res.send (JSON.stringify (comments [id]));
 });
 
 app.get ('/data', function (req, res) {
@@ -76,8 +61,8 @@ app.get ('/data', function (req, res) {
 });
 
 app.get('*', function (req, res) {
-   res.sendFile( __dirname + "/node_modules/socket.io-client/dist/socket.io.js");
+   res.sendFile( __dirname + req.url);
 })
 
-server.listen(3000);
-console.log('"Comment Service" listening on port 3000!');
+server.listen(23456);
+console.log('"Comment Service" listening on port 23456!');
